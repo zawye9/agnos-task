@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: production-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: api-alerts
+      rules:
+
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(envoy_http_downstream_rq_xx{envoy_response_code_class="5"}[2m]))
+          /
+          sum(rate(envoy_http_downstream_rq_total[2m]))
+          > 0.05
+        for: 2m
+        labels:
+          severity: critical
+
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(envoy_http_downstream_rq_time_bucket[5m])) by (le))
+          > 1
+        for: 2m
+        labels:
+          severity: warning
+
+      - alert: WorkerStalled
+        expr: redis_connected_clients == 0
+        for: 3m
+        labels:
+          severity: critical
+
+      - alert: CrashLooping
+        expr: increase(kube_pod_container_status_restarts_total[5m]) > 3
+        for: 2m
+        labels:
+          severity: critical

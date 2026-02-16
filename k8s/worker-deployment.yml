@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: myapp:1.0
+          command: ["python"]
+          args: ["worker.py"]
+
+          envFrom:
+            - configMapRef:
+                name: app-config
+
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "400m"
+              memory: "512Mi"
+
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pgrep -f worker.py
+            initialDelaySeconds: 15
+            periodSeconds: 15
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pgrep -f worker.py
+            initialDelaySeconds: 5
+            periodSeconds: 10
