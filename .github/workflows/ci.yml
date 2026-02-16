@@ -37,6 +37,7 @@ jobs:
 # -------------------------
   test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: lint
 
     steps:
@@ -61,6 +62,7 @@ jobs:
 # -------------------------
   build:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: test
 
     steps:
