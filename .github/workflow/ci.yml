@@ -71,7 +71,7 @@ jobs:
           docker build -t $IMAGE_NAME:$IMAGE_TAG .
 
 # -------------------------
-# 4️⃣ Push Docker Image
+# 4️⃣ Push Docker Image---
 # -------------------------
   push:
     runs-on: ubuntu-latest
@@ -89,7 +89,7 @@ jobs:
           docker push $IMAGE_NAME:$IMAGE_TAG
 
 # -------------------------
-# 5️⃣ Deploy to Kubernetes
+# 5️⃣ Deploy to Kubernetes---
 # -------------------------
   deploy:
     runs-on: ubuntu-latest
