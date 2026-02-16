@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Linter
         run: |
-          flake8 app/
+          flake8 .
 
 # -------------------------
 # 2️⃣ Unit Tests
