@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  IMAGE_NAME: your-docker-repo/api
+  IMAGE_NAME: zawye21/api
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
