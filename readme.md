@@ -1,6 +1,6 @@
 API + Worker Kubernetes Setup Guide
 
-Production-ready setup using:
+ setup using:
 
 Docker
 
@@ -16,38 +16,38 @@ Prerequisites
 
 Make sure the following tools are installed:
 
-Docker
+-Docker
 
-Minikube
+- Minikube
 
-kubectl
+- kubectl
 
-Helm
+- Helm
 
 1. Install Docker
-curl -fsSL https://get.docker.com | sh
+- curl -fsSL https://get.docker.com | sh
 docker --version
 
 2. Install Minikube
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+- curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
-minikube start --driver=docker
+- minikube start --driver=docker
 
 
 Verify cluster:
 
-kubectl get nodes
+- kubectl get nodes
 
 3. Create Namespaces (Environment Isolation)
-kubectl create namespace dev
-kubectl create namespace uat
-kubectl create namespace prod
+- kubectl create namespace dev
+- kubectl create namespace uat
+- kubectl create namespace prod
 
 4. Deploy Redis
-kubectl apply -f redis-deployment.yml -n <namespace>
-kubectl apply -f redis-service.yml -n <namespace>
-kubectl apply -f redis-exporter.yml -n <namespace>
+- kubectl apply -f redis-deployment.yml -n <namespace>
+- kubectl apply -f redis-service.yml -n <namespace>
+- kubectl apply -f redis-exporter.yml -n <namespace>
 
 
 Example:
@@ -58,23 +58,23 @@ kubectl apply -f redis-deployment.yml -n dev
 
 Enable metrics server in Minikube:
 
-minikube addons enable metrics-server
+- minikube addons enable metrics-server
 
 
 Verify:
 
-kubectl get pods -n kube-system
+- kubectl get pods -n kube-system
 
 6. Install Prometheus and Grafana
 Install Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+- curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 Add Prometheus Helm Repository
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
+- helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+- helm repo update
 
 Install kube-prometheus-stack
-helm install prometheus prometheus-community/kube-prometheus-stack \
+- helm install prometheus prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
   --create-namespace
 
@@ -82,14 +82,14 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 
 Get Grafana admin password:
 
-kubectl get secret prometheus-grafana \
+- kubectl get secret prometheus-grafana \
   -n monitoring \
   -o jsonpath="{.data.admin-password}" | base64 --decode
 
 
 Port forward:
 
-kubectl port-forward svc/prometheus-grafana 3000:80 -n monitoring
+- kubectl port-forward svc/prometheus-grafana 3000:80 -n monitoring
 
 
 Open in browser:
@@ -100,56 +100,56 @@ Monitoring Strategy
 
 Monitor the following metrics:
 
-Error rate
+- Error rate
 
-Latency (P95 / P99)
+- Latency (P95 / P99)
 
-CPU usage
+- CPU usage
 
-Memory usage
+- Memory usage
 
-Pod restarts
+- Pod restarts
 
 Handling API Crash During Peak Hour
 
 To reduce downtime:
 
-Use liveness probe
+- Use liveness probe:
 Automatically restarts crashed containers.
 
-Use readiness probe
+- Use readiness probe:
 Stops traffic to unhealthy pods.
 
-Enable HPA
+- Enable HPA:
 Scale pods automatically during peak load.
 
-Use LoadBalancer or Ingress
+- Use LoadBalancer or Ingress:
 Distribute traffic properly.
 
 Handling Bad Deployment
 
 Monitor system behavior after deployment:
 
-Error rate spike
+- Error rate spike
 
-Latency spike
+- Latency spike
 
-CPU or memory spike
+- CPU or memory spike
 
-Pod crash loops
+- Pod crash loops
 
-Rollback Deployment
+- Rollback Deployment
 
 If deployment causes issues:
 
-kubectl rollout undo deployment/api -n <namespace>
+- kubectl rollout undo deployment/api -n <namespace>
 
 
 Example:
 
-kubectl rollout undo deployment/api -n prod
+- kubectl rollout undo deployment/api -n prod
 
 
 Check rollout history:
 
-kubectl rollout history deployment/api -n prod
+- kubectl rollout history deployment/api -n prod
