@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: myapp:1.0
+          image: zawye21/api
           command: ["python"]
           args: ["worker.py"]
 

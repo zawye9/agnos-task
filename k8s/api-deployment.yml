@@ -16,7 +16,7 @@ spec:
       containers:
 
       - name: api
-        image: your-api-image:latest
+        image: zawye21/api:latest
         ports:
           - containerPort: 3000
         resources:
@@ -27,18 +27,4 @@ spec:
             cpu: "500m"
             memory: "512Mi"
 
-      - name: envoy
-        image: envoyproxy/envoy:v1.29-latest
-        ports:
-          - containerPort: 9901
-        volumeMounts:
-          - name: envoy-config
-            mountPath: /etc/envoy
-        args:
-          - "-c"
-          - "/etc/envoy/envoy.yaml"
-
-      volumes:
-        - name: envoy-config
-          configMap:
-            name: envoy-config
+    
